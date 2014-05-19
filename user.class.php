@@ -24,25 +24,25 @@
 // mysql syntax
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `user_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) NOT NULL,
-  `password` varchar(100) NOT NULL,
-  `course_IDFK` int(11) NOT NULL,
-  `salt` varchar(32) NOT NULL,
-  `ip` varchar(255) NOT NULL,
-  `useragent` varchar(255) NOT NULL,
-  `request_time` varchar(32) NOT NULL,
-  `last_active` datetime NOT NULL,
-  `salt_rounds` tinyint(2) NOT NULL,
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `is_prof` tinyint(1) NOT NULL DEFAULT '0',
-  `is_active` tinyint(1) NOT NULL DEFAULT '0',
-  `wrong_login_count` tinyint(2) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_ID`),
-  UNIQUE KEY `username` (`username`),
-  KEY `course_IDFK` (`course_IDFK`)
+`user_ID` int(11) NOT NULL AUTO_INCREMENT,
+`username` varchar(20) NOT NULL,
+`password` varchar(100) NOT NULL,
+`course_IDFK` int(11) NOT NULL,
+`salt` varchar(32) NOT NULL,
+`ip` varchar(255) NOT NULL,
+`useragent` varchar(255) NOT NULL,
+`request_time` varchar(32) NOT NULL,
+`last_active` datetime NOT NULL,
+`salt_rounds` tinyint(2) NOT NULL,
+`is_admin` tinyint(1) NOT NULL DEFAULT '0',
+`is_prof` tinyint(1) NOT NULL DEFAULT '0',
+`is_active` tinyint(1) NOT NULL DEFAULT '0',
+`wrong_login_count` tinyint(2) NOT NULL DEFAULT '0',
+PRIMARY KEY (`user_ID`),
+UNIQUE KEY `username` (`username`),
+KEY `course_IDFK` (`course_IDFK`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-*/
+ */
 
 ##
 # Usage:
@@ -75,21 +75,21 @@ CREATE TABLE IF NOT EXISTS `users` (
 # ---------------------------------------------
 # things that have to be defined:
 /*
-define('USERS','users'); // table with user information
-define('ID', 'user_ID'); // ID for the table, auto increment
-define('USER', 'username'); // field with all usernames/loginnames
-define('PASS', 'password'); // field with all secured passwords
-define('SALT_ADD', 'salt'); // field with an additional salt
-define('IP', 'ip'); // field with ip address
-define('USERAGENT', 'useragent'); // field with useragnet
-define('REQUEST_TIME', 'request_time'); // field with useragnet
-define('LIVESIGN', 'last_active'); // field with last logged activity
-define('SALT_ROUNDS', 'salt_rounds'); // field with amount of rounds for salting the pw hash
-define('COURSE_IDFK', 'course_IDFK'); // ID for table course, auto increment
-define('IS_ADMIN', 'is_admin'); // 1 if user is a admin, 0 if not
-define('IS_PROF', 'is_prof'); // 1 if user is a prof, 0 if he's a student
-define('IS_ACTIVE', 'is_active'); // 1 if user is enabled, 0 if not
-define('WRONG_LOGIN_COUNT', 'wrong_login_count'); // number of wrong logins*/
+	 define('USERS','users'); // table with user information
+	 define('ID', 'user_ID'); // ID for the table, auto increment
+	 define('USER', 'username'); // field with all usernames/loginnames
+	 define('PASS', 'password'); // field with all secured passwords
+	 define('SALT_ADD', 'salt'); // field with an additional salt
+	 define('IP', 'ip'); // field with ip address
+	 define('USERAGENT', 'useragent'); // field with useragnet
+	 define('REQUEST_TIME', 'request_time'); // field with useragnet
+	 define('LIVESIGN', 'last_active'); // field with last logged activity
+	 define('SALT_ROUNDS', 'salt_rounds'); // field with amount of rounds for salting the pw hash
+	 define('COURSE_IDFK', 'course_IDFK'); // ID for table course, auto increment
+	 define('IS_ADMIN', 'is_admin'); // 1 if user is a admin, 0 if not
+	 define('IS_PROF', 'is_prof'); // 1 if user is a prof, 0 if he's a student
+	 define('IS_ACTIVE', 'is_active'); // 1 if user is enabled, 0 if not
+	 define('WRONG_LOGIN_COUNT', 'wrong_login_count'); // number of wrong logins*/
 # ---------------------------------------------
 # the get_mysqli method:
 /*function get_mysqli($charset = false){
@@ -97,28 +97,28 @@ define('WRONG_LOGIN_COUNT', 'wrong_login_count'); // number of wrong logins*/
 	global $user;
 	global $password;
 	global $database;
-	
+
 	if($charset === false OR !is_string($charset)){
-		$charset = 'utf8';
+	$charset = 'utf8';
 	}
 	$mysqli = mysqli_init();
 	if($mysqli->real_connect($host, $user, $password, $database)){
-		unset($host);
-		unset($user);
-		unset($password);
-		unset($database);
-		$mysqli->query("SET 
-										character_set_results = '".$charset."', 
-										character_set_client = '".$charset."', 
-										character_set_connection = '".$charset."', 
-										character_set_database = '".$charset."', 
-										character_set_server = '".$charset."'
-                  ");
+	unset($host);
+	unset($user);
+	unset($password);
+	unset($database);
+	$mysqli->query("SET 
+	character_set_results = '".$charset."', 
+	character_set_client = '".$charset."', 
+	character_set_connection = '".$charset."', 
+	character_set_database = '".$charset."', 
+	character_set_server = '".$charset."'
+	");
 	return $mysqli;
 	}else{
-		die('Connect Error ('.mysqli_connect_errno().') '.mysqli_connect_error());
+	die('Connect Error ('.mysqli_connect_errno().') '.mysqli_connect_error());
 	}
-}*/
+	}*/
 ##
 class User {
 
@@ -131,35 +131,35 @@ class User {
 	private $is_admin						= false;	// set to true if new users should have admin privileges
 	private $is_prof						= false;	// set to true if new users are profs, else they are students
 	private $error							= '';			// string with the last error
-	
+
 	function  __construct(){
 		$this->sql = get_mysqli();
 	}
 	/**
-	* login
-	*
-	* check if we got valid login credentials (for later: check for max failed login attempts, set user to [dis|en]abled)
-	*
-	* @param String $user
-	* @param String $password
-	*
-	* @return TRUE if login was successfull
-	* @return FALSE if not
-	*/
+	 * login
+	 *
+	 * check if we got valid login credentials (for later: check for max failed login attempts, set user to [dis|en]abled)
+	 *
+	 * @param String $user
+	 * @param String $password
+	 *
+	 * @return TRUE if login was successfull
+	 * @return FALSE if not
+	 */
 	public function login($user, $password){
 		$user = $this->sql->real_escape_string($user);
 		$password = $this->sql->real_escape_string($password);
 		/* search user in db */
 		$query = "SELECT 
-								`".PASS."`,
-								`".ID."`,
-								`".COURSE_IDFK."`,
-								`".SALT_ADD."`,
-								`".IS_PROF."`
-							FROM
-								`".USERS."`
-							WHERE
-								`".USER."` = '".$user."'";
+			`".PASS."`,
+			`".ID."`,
+			`".COURSE_IDFK."`,
+			`".SALT_ADD."`,
+			`".IS_PROF."`
+				FROM
+				`".USERS."`
+				WHERE
+				`".USER."` = '".$user."'";
 		if($result = $this->sql->query($query)){
 			/* if we found one valid username... */
 			if ($result->num_rows == 1){
@@ -175,15 +175,15 @@ class User {
 				if($new_hash == $data->$pass){
 					/* update the userinformation inside the db and set the session */
 					$query = "UPDATE
-											`".USERS."`
-										SET
-											`".IP."` = '".$this->sql->real_escape_string($_SERVER['REMOTE_ADDR'])."',
-											`".USERAGENT."` = '".$this->sql->real_escape_string($_SERVER['HTTP_USER_AGENT'])."',
-											`".REQUEST_TIME."` = '".$this->sql->real_escape_string(md5($_SERVER['REQUEST_TIME']))."',
-											`".LIVESIGN."` = NOW()
-										WHERE
-											`".USER."` = '".$user."'
-										LIMIT 1";
+						`".USERS."`
+						SET
+						`".IP."` = '".$this->sql->real_escape_string($_SERVER['REMOTE_ADDR'])."',
+						`".USERAGENT."` = '".$this->sql->real_escape_string($_SERVER['HTTP_USER_AGENT'])."',
+						`".REQUEST_TIME."` = '".$this->sql->real_escape_string(md5($_SERVER['REQUEST_TIME']))."',
+						`".LIVESIGN."` = NOW()
+							WHERE
+							`".USER."` = '".$user."'
+							LIMIT 1";
 					if ($this->sql->query($query)){
 						$_SESSION['angemeldet']   = true;
 						$_SESSION['benutzername'] = $user;
@@ -209,38 +209,38 @@ class User {
 			return FALSE;
 		}
 	}
-	
+
 	/**
-	* update_failed_logins
-	*
-	* increase or reset the failed_logins filed in the db
-	*/
+	 * update_failed_logins
+	 *
+	 * increase or reset the failed_logins filed in the db
+	 */
 	public function update_failed_logins(){
-		
+
 	}
 
 	/**
-	* logout
-	*
-	* We logout the user
-	*/
+	 * logout
+	 *
+	 * We logout the user
+	 */
 	public function logout(){
 		session_destroy();
 		header("location: index.php");
 		exit;
 	}
-	
+
 	/**
-	* validate_username
-	*
-	* check if the username has only valid chars and is unique, if $exists is set, the user has to be in the database
-	*
-	* @param String $user
-	* @param String $exists
-	*
-	* @return TRUE if username is correct, free and $exists false(for registration), OR if username is correct and once inside the db (logincheck)
-	* @return FALSE for every other case
-	*/
+	 * validate_username
+	 *
+	 * check if the username has only valid chars and is unique, if $exists is set, the user has to be in the database
+	 *
+	 * @param String $user
+	 * @param String $exists
+	 *
+	 * @return TRUE if username is correct, free and $exists false(for registration), OR if username is correct and once inside the db (logincheck)
+	 * @return FALSE for every other case
+	 */
 	public function validate_username($user, $exists){
 		if(empty($user)){
 			return FALSE;
@@ -253,11 +253,11 @@ class User {
 		}else{
 			$user = $this->sql->real_escape_string(trim($user));
 			if($result = $this->sql->query("SELECT 
-																				`".USER."` 
-																			FROM 
-																				`".USERS."` 
-																			WHERE 
-																				`".USER."` = '".$user."'")){
+						`".USER."` 
+						FROM 
+						`".USERS."` 
+						WHERE 
+						`".USER."` = '".$user."'")){
 				/* return true if one user found and we want an existing user */
 				if($result->num_rows === 1 AND $exists){
 					return TRUE;
@@ -265,36 +265,36 @@ class User {
 				}elseif($result->num_rows === 0 AND !$exists){
 					return TRUE;
 				}
-			}	
+		}	
 		}
 		return FALSE;
 	}
-	
+
 	/**
-	* validate_password
-	*
-	* check if the password has only valid chars and is unique 
-	*
-	* @param string $password	
-	*
-	* @return TRUE/FALSE if the password is save or insecure
-	*/
+	 * validate_password
+	 *
+	 * check if the password has only valid chars and is unique 
+	 *
+	 * @param string $password	
+	 *
+	 * @return TRUE/FALSE if the password is save or insecure
+	 */
 	private function validate_password($password){
 		return TRUE;
 	}
-	
+
 	/**
-	* register
-	*
-	* User can signup
-	*
-	* @param string $user
-	* @param string $password
-	* @param int		$course		whats the course that the people is visiting?
-	* @param int		$rounds		how good should the password be saved?
-	*
-	* @return TRUE/FALSE if the user was successfully added to the db or not
-	*/
+	 * register
+	 *
+	 * User can signup
+	 *
+	 * @param string $user
+	 * @param string $password
+	 * @param int		$course		whats the course that the people is visiting?
+	 * @param int		$rounds		how good should the password be saved?
+	 *
+	 * @return TRUE/FALSE if the user was successfully added to the db or not
+	 */
 	public function register($user, $password, $course, $rounds){
 		// get current time 
 		$salt_add = md5(microtime());
@@ -321,33 +321,33 @@ class User {
 			$pw_hash = crypt($string, '$2a$'.$rounds.'$'.$salt);
 			// write everything to the database
 			$query = "INSERT INTO 
-								`".USERS."` 
-									( `".USER."`, 
-									`".PASS."`, 
-									`".SALT_ADD."`,
-									`".IP."`,
-									`".USERAGENT."`,
-									`".REQUEST_TIME."`,
-									`".LIVESIGN."`,
-									`".SALT_ROUNDS."`,
-									`".COURSE_IDFK."`,
-									`".IS_ACTIVE."`,
-									`".IS_PROF."`,
-									`".IS_ADMIN."`)
-								VALUES
-									( '".$user."',
-									'".$pw_hash."',
-									'".$salt_add."',
-									'".$_SERVER['REMOTE_ADDR']."',
-									'".$_SERVER['HTTP_USER_AGENT']."',
-									'".$_SERVER['REQUEST_TIME']."',
-									'0000-00-00 00:00:00',
-									'".$rounds."',
-									'".$course."',
-									'".$this->is_enabled."',
-									'".$this->is_prof."',
-									'".$this->is_admin."'
-									)";
+				`".USERS."` 
+				( `".USER."`, 
+					`".PASS."`, 
+					`".SALT_ADD."`,
+					`".IP."`,
+					`".USERAGENT."`,
+					`".REQUEST_TIME."`,
+					`".LIVESIGN."`,
+					`".SALT_ROUNDS."`,
+					`".COURSE_IDFK."`,
+					`".IS_ACTIVE."`,
+					`".IS_PROF."`,
+					`".IS_ADMIN."`)
+				VALUES
+				( '".$user."',
+					'".$pw_hash."',
+					'".$salt_add."',
+					'".$_SERVER['REMOTE_ADDR']."',
+					'".$_SERVER['HTTP_USER_AGENT']."',
+					'".$_SERVER['REQUEST_TIME']."',
+					'0000-00-00 00:00:00',
+					'".$rounds."',
+					'".$course."',
+					'".$this->is_enabled."',
+					'".$this->is_prof."',
+					'".$this->is_admin."'
+				)";
 			if($this->sql->query($query)AND $this->sql->affected_rows == 1){
 				return TRUE;
 			}else{
@@ -355,15 +355,15 @@ class User {
 			}
 		}
 	}
-	
+
 	/**
-	* check_user
-	*
-	* We look if the visitor is a logged in user or a stranger
-	*
-	* @return TRUE if the visitor is a logged in user
-	* @return FALSE if he is a stranger
-	*/
+	 * check_user
+	 *
+	 * We look if the visitor is a logged in user or a stranger
+	 *
+	 * @return TRUE if the visitor is a logged in user
+	 * @return FALSE if he is a stranger
+	 */
 	public function check_user(){
 		session_regenerate_id(true);
 		if((isset($_SESSION['angemeldet']) AND $_SESSION['angemeldet'] !== TRUE) OR !isset($_SESSION['angemeldet'])){
@@ -371,14 +371,14 @@ class User {
 		}else{
 			$user = $this->sql->real_escape_string($_SESSION['benutzername']);
 			$query = "SELECT
-									`".IP."`, 
-									`".USERAGENT."`,
-									`".REQUEST_TIME."`,
-									UNIX_TIMESTAMP(`".LIVESIGN."`) as ".LIVESIGN."
-								FROM
-									`".USERS."`
-								WHERE
-									`".USER."` = '".$user."'";
+				`".IP."`, 
+				`".USERAGENT."`,
+				`".REQUEST_TIME."`,
+				UNIX_TIMESTAMP(`".LIVESIGN."`) as ".LIVESIGN."
+					FROM
+					`".USERS."`
+					WHERE
+					`".USER."` = '".$user."'";
 			$result = $this->sql->query($query);
 			if ($result->num_rows == 1){
 				$data = $result->fetch_object();
@@ -395,12 +395,12 @@ class User {
 				return FALSE;
 			}
 			$query = "UPDATE
-								`".USERS."`
-							SET
-								`".LIVESIGN."` = NOW()
-							WHERE
-								`".USER."` = '".$user."'
-							LIMIT 1";
+				`".USERS."`
+				SET
+				`".LIVESIGN."` = NOW()
+				WHERE
+				`".USER."` = '".$user."'
+				LIMIT 1";
 			if($this->sql->query($query)){
 				return TRUE;
 			}else{
