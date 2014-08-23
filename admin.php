@@ -2,7 +2,7 @@
 require('functions.php');
 error_reporting(E_ALL); 
 ini_set( 'display_errors','1');
-$debug = false;
+$debug = true;
 $mysqli = get_mysqli();
 $category = '';
 $output = '';
@@ -68,7 +68,14 @@ if(isset($_GET['id'])){
 	}
 }
 /* create new post */
-if(isset($_POST['save']) && $_POST['save'] == "Speichern" && !isset($_GET['id']) && isset($_POST['title']) && isset($_POST['content'])){
+if(
+		isset($_POST['save']) && 
+		$_POST['save'] == 'Speichern' && 
+		!isset($_GET['id']) && 
+		isset($_POST['title']) &&
+		!empty($_POST['title']) &&
+		isset($_POST['content']) &&
+		!empty($_POST['content'])){
 	if($debug){
 		$output .= "<div class='box' style='margin-bottom:3px;color:white;font-weight:bold;background-color:green;width:auto;'><pre>".print_r($_POST, true)."</pre></div>\n";
 	}
